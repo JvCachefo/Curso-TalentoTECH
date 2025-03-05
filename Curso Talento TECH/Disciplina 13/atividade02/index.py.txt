@@ -1,0 +1,78 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# Parte 1: Manipulação de Dados Meteorológicos
+# Criar DataFrame com os dados
+dados = {
+    'Data': ['15/01/2025'] * 5,
+    'Cidade': ['São Paulo', 'Rio de Janeiro', 'Curitiba', 'Porto Alegre', 'Salvador'],
+    'Temperatura_Maxima': [30.5, 35.0, 24.0, 28.0, 31.0],
+    'Temperatura_Minima': [22.0, 25.0, 18.0, 20.0, 24.5],
+    'Precipitacao': [12.0, np.nan, 8.0, 15.0, np.nan],
+    'Umidade_Relativa': [78, 70, np.nan, 82, 80]
+}
+
+df = pd.DataFrame(dados)
+
+# Substituir valores ausentes na coluna Precipitação pela média
+df['Precipitacao'].fillna(df['Precipitacao'].mean(), inplace=True)
+
+# Substituir valores ausentes na coluna Umidade Relativa pela mediana
+df['Umidade_Relativa'].fillna(df['Umidade_Relativa'].median(), inplace=True)
+
+# Criar a coluna de Amplitude Térmica
+df['Amplitude_Termica'] = df['Temperatura_Maxima'] - df['Temperatura_Minima']
+
+# Filtrar cidades com temperatura máxima acima de 30°C
+df_filtrado = df[df['Temperatura_Maxima'] > 30]
+
+# Reordenar as colunas
+colunas_ordenadas = ['Data', 'Cidade', 'Temperatura_Maxima', 'Temperatura_Minima', 'Amplitude_Termica', 'Precipitacao', 'Umidade_Relativa']
+df_final = df_filtrado[colunas_ordenadas]
+print(df_final.head())
+
+# Parte 2: Visualização da Evolução da Temperatura Durante o Dia
+horas = list(range(0, 25))
+temperaturas = [15 + (x * 1.25) if x <= 12 else 30 - (x - 12) * 1.0 for x in horas]
+
+plt.figure(figsize=(10,5))
+plt.plot(horas, temperaturas, marker='o', linestyle='-', color='b')
+plt.xlabel("Hora do Dia")
+plt.ylabel("Temperatura (°C)")
+plt.title("Evolução da Temperatura ao Longo do Dia")
+plt.grid()
+plt.show()
+
+# Parte 3: Análise de Vendas da Loja
+dados_vendas = {
+    'Dia': ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+    'Vendas': [150, 200, 180, 220, 300, 400, 350],
+    'Clientes': [50, 70, 60, 80, 100, 150, 130],
+    'Lucro': [500, 700, 650, 800, 1200, 1600, 1400]
+}
+
+df_vendas = pd.DataFrame(dados_vendas)
+
+# Gráfico de barras - Vendas por Dia
+tplt.figure(figsize=(8,5))
+sns.barplot(x='Dia', y='Vendas', data=df_vendas)
+plt.title("Vendas por Dia da Semana")
+plt.xlabel("Dia")
+plt.ylabel("Total de Vendas")
+plt.show()
+
+# Gráfico de dispersão - Clientes x Vendas
+plt.figure(figsize=(8,5))
+sns.scatterplot(x='Clientes', y='Vendas', data=df_vendas)
+plt.title("Relação entre Número de Clientes e Total de Vendas")
+plt.xlabel("Número de Clientes")
+plt.ylabel("Total de Vendas")
+plt.show()
+
+# Heatmap - Correlação entre variáveis
+plt.figure(figsize=(8,5))
+sns.heatmap(df_vendas.corr(), annot=True, cmap='coolwarm')
+plt.title("Correlação Entre Vendas, Clientes e Lucro")
+plt.show()

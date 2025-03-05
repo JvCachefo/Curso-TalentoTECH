@@ -1,0 +1,52 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.cluster import KMeans
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import mean_squared_error, accuracy_score
+from sklearn.model_selection import train_test_split
+
+# 6) Regressão Linear - Custo de energia elétrica
+np.random.seed(42)
+aparelhos = np.random.randint(1, 10, 20)
+custo = 30 + 15 * aparelhos + np.random.normal(0, 5, 20)
+
+X = aparelhos.reshape(-1, 1)
+y = custo
+modelo_linear = LinearRegression()
+modelo_linear.fit(X, y)
+predicoes = modelo_linear.predict(X)
+mse = mean_squared_error(y, predicoes)
+
+# 7) Regressão Logística - Risco de doença cardíaca
+np.random.seed(42)
+atividades = np.random.randint(0, 15, 50)
+risco = (atividades < 5).astype(int)
+X_train, X_test, y_train, y_test = train_test_split(atividades.reshape(-1, 1), risco, test_size=0.2)
+modelo_logistico = LogisticRegression()
+modelo_logistico.fit(X_train, y_train)
+y_pred = modelo_logistico.predict(X_test)
+acuracia = accuracy_score(y_test, y_pred)
+
+# 8) K-Means - Agrupamento de alunos
+notas = np.random.randint(0, 100, (20, 2))
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(notas)
+
+# 9) Árvore de Decisão - Classificação de veículos
+np.random.seed(42)
+carros = pd.DataFrame({
+    'potencia': np.random.randint(50, 300, 20),
+    'peso': np.random.randint(800, 2500, 20),
+})
+carros['economico'] = (carros['potencia'] / carros['peso'] < 0.1).astype(int)
+X_train, X_test, y_train, y_test = train_test_split(carros[['potencia', 'peso']], carros['economico'], test_size=0.2)
+modelo_arvore = DecisionTreeClassifier()
+modelo_arvore.fit(X_train, y_train)
+
+# Exibir gráfico da árvore
+tree_fig, ax = plt.subplots(figsize=(8, 6))
+plot_tree(modelo_arvore, feature_names=['potencia', 'peso'], class_names=['Não Econômico', 'Econômico'], filled=True, ax=ax)
+plt.show()
