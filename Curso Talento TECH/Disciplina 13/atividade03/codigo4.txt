@@ -1,0 +1,28 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+
+# Criando dados fictícios (potência do motor x peso do veículo -> "Econômico" ou "Não Econômico")
+dados = {'potencia': [100, 120, 140, 160, 180, 200, 220, 240, 260, 280],
+         'peso': [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900],
+         'categoria': ['Econômico', 'Econômico', 'Econômico', 'Econômico', 'Econômico', 
+                       'Não Econômico', 'Não Econômico', 'Não Econômico', 'Não Econômico', 'Não Econômico']}
+
+df = pd.DataFrame(dados)
+
+# Convertendo a categoria para valores numéricos
+df['categoria'] = df['categoria'].map({'Econômico': 0, 'Não Econômico': 1})
+
+# Separando variáveis independentes (X) e dependente (y)
+X = df[['potencia', 'peso']]
+y = df['categoria']
+
+# Criando e treinando o modelo
+modelo = DecisionTreeClassifier()
+modelo.fit(X, y)
+
+# Visualizando a árvore de decisão
+plt.figure(figsize=(10, 6))
+plot_tree(modelo, feature_names=['Potência', 'Peso'], class_names=['Econômico', 'Não Econômico'], filled=True)
+plt.show()
