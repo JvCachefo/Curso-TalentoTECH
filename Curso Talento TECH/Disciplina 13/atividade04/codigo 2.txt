@@ -1,0 +1,57 @@
+import requests
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+
+# 1. Coletando dados da API de criptomoedas (CoinGecko)
+url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily"
+response = requests.get(url)
+data = response.json()
+
+# Transformando em DataFrame
+precos = [x[1] for x in data["prices"]]
+datas = pd.date_range(end=pd.Timestamp.today(), periods=len(precos))
+
+df = pd.DataFrame({"data": datas, "preco": precos})
+
+# 2. Criando a variável alvo (subiu: 1 se o preço subiu, 0 se caiu)
+df["variacao"] = df["preco"].diff().fillna(0)
+df["subiu"] = (df["variacao"] > 0).astype(int)
+
+# Removendo a primeira linha (pois diff gera NaN)
+df = df.iloc[1:].reset_index(drop=True)
+
+# 3. Preparação dos dados
+X = df[["preco"]]
+y = df["subiu"]
+
+# Divisão em treino e teste
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Normalizando os dados
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 4. Criando e treinando o modelo de regressão logística
+modelo = LogisticRegression()
+modelo.fit(X_train_scaled, y_train)
+
+# Fazendo previsões
+y_pred = modelo.predict(X_test_scaled)
+
+# Avaliação do modelo
+acuracia = accuracy_score(y_test, y_pred)
+print(f"Acurácia do modelo: {acuracia:.2f}")
+
+# 5. Visualizando a importância das variáveis
+coeficientes = modelo.coef_[0]
+plt.bar(X.columns, coeficientes)
+plt.title("Importância das Variáveis no Modelo")
+plt.xlabel("Variáveis")
+plt.ylabel("Peso do Coeficiente")
+plt.show()
