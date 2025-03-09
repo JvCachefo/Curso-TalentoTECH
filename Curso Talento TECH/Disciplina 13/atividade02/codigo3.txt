@@ -1,0 +1,29 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Dados fictícios de vendas
+dados_vendas = {
+    'Dia da Semana': ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
+    'Vendas': [2000, 2500, 2200, 2400, 3000, 3500, 2800],
+    'Número de Clientes': [150, 180, 160, 170, 200, 250, 220],
+    'Lucro': [400, 500, 450, 480, 600, 700, 560]
+}
+
+# Criando o DataFrame
+df_vendas = pd.DataFrame(dados_vendas)
+
+# Gráfico 1: Barras de Vendas por Dia
+sns.barplot(x='Dia da Semana', y='Vendas', data=df_vendas)
+plt.title('Vendas por Dia da Semana')
+plt.show()
+
+# Gráfico 2: Dispersão entre Número de Clientes e Vendas
+sns.scatterplot(x='Número de Clientes', y='Vendas', data=df_vendas)
+plt.title('Número de Clientes vs Vendas')
+plt.show()
+
+# Gráfico 3: Heatmap para Correlação entre Vendas, Clientes e Lucro
+corr = df_vendas.corr()
+sns.heatmap(corr, annot=True, cmap='coolwarm', center=0)
+plt.title('Correlação entre Variáveis')
+plt.show()

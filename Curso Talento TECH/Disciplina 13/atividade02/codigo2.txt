@@ -1,0 +1,17 @@
+mport matplotlib.pyplot as plt
+
+# Definindo as horas e as temperaturas
+horas = list(range(25))
+temperaturas = [15, 16, 18, 20, 22, 24, 26, 28, 30, 32, 30, 28, 26, 24, 22, 20, 19, 18, 17, 16, 16, 15, 14, 14, 13]
+
+# Criando o gráfico de linha
+plt.plot(horas, temperaturas, marker='o', color='b', label='Temperatura (°C)')
+
+# Adicionando título e rótulos
+plt.title('Evolução da Temperatura Durante o Dia')
+plt.xlabel('Hora do Dia')
+plt.ylabel('Temperatura (°C)')
+
+# Exibindo o gráfico
+plt.grid(True)
+plt.show()
